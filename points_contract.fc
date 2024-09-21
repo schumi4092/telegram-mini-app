@@ -1,0 +1,63 @@
+;; 積分系統合約
+
+;; 存儲結構
+(cell, int) load_data() inline {
+    var ds = get_data().begin_parse();
+    return (ds~load_dict(), ds~load_uint(64));
+}
+
+() save_data(cell users, int total_supply) impure inline {
+    set_data(begin_cell()
+        .store_dict(users)
+        .store_uint(total_supply, 64)
+        .end_cell());
+}
+
+;; 獲取用戶積分
+int get_user_points(slice user_address) method_id {
+    (cell users, _) = load_data();
+    (slice cs, int found?) = users.udict_get?(256, user_address);
+    if (found?) {
+        return cs~load_uint(64);
+    } else {
+        return 0;
+    }
+}
+
+;; 增加用戶積分
+() add_points(slice user_address, int points) impure {
+    (cell users, int total_supply) = load_data();
+    (slice cs, int found?) = users.udict_get?(256, user_address);
+    int current_points = 0;
+    if (found?) {
+        current_points = cs~load_uint(64);
+    }
+    users~udict_set_builder(256, user_address, begin_cell().store_uint(current_points + points, 64));
+    save_data(users, total_supply + points);
+}
+
+;; 處理內部消息
+() recv_internal(int msg_value, cell in_msg_full, slice in_msg_body) impure {
+    if (in_msg_body.slice_empty?()) { ;; 忽略空消息
+        return ();
+    }
+    slice cs = in_msg_full.begin_parse();
+    int flags = cs~load_uint(4);
+    if (flags & 1) { ;; 忽略反彈消息
+        return ();
+    }
+    slice sender_address = cs~load_msg_addr();
+    
+    int op = in_msg_body~load_uint(32);
+    if (op == 1) { ;; 增加積分操作
+        slice user_address = in_msg_body~load_msg_addr();
+        int points = in_msg_body~load_uint(64);
+        add_points(user_address, points);
+    }
+}
+
+;; 獲取合約信息
+(int, int) get_contract_info() method_id {
+    (_, int total_supply) = load_data();
+    return (total_supply, now());
+}
