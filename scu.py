@@ -1,6 +1,6 @@
 import logging
-from telegram import Update
-from telegram.ext import Application, CommandHandler, ContextTypes
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup ,ReplyKeyboardMarkup, KeyboardButton, WebAppInfo
+from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 from datetime import datetime, timedelta
 
 # 設置日誌
@@ -10,20 +10,29 @@ logger = logging.getLogger(__name__)
 # 用戶數據存儲（在實際應用中，這應該使用數據庫）
 user_data = {}
 
+# url="https://t.me/SCU_slotbot/slotgame"
 # 命令處理函數
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """發送歡迎消息"""
-    await update.message.reply_text('歡迎使用東吳拉霸機，使用 /help 查看可用命令。')
+    keyboard = [
+        [InlineKeyboardButton("🎮 Play game", url="https://t.me/SCU_slotbot/slotgame")]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text='歡迎使用東吳拉霸機，點擊下方按鈕開始遊戲或使用 /help 查看可用命令。',
+        reply_markup=reply_markup
+    )
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """顯示幫助信息"""
     help_text = """
     可用命令：
-    /start - 開始使用bot
+    /start - 開始使用bot並顯示遊戲按鈕
     /help - 顯示此幫助信息
     /checkin - 每日簽到
     /points - 查看您的積分
+    使用 /start 命令來顯示遊戲按鈕
     """
     await update.message.reply_text(help_text)
 
@@ -52,7 +61,6 @@ async def check_points(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 
 def main() -> None:
     """啟動bot"""
-    # 替換 'YOUR_BOT_TOKEN' 為您的實際bot token
     application = Application.builder().token('7504718790:AAFNjAZ_6vQ3dJpsA2DH4Ficyf5uiD98i7U').build()
 
     # 添加命令處理器
