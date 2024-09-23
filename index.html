@@ -1,67 +1,154 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>積分上鏈 Mini App</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://unpkg.com/@ton/ton@0.23.1/dist/index.js"></script>
+    <title>Telegram簽到系統</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
+        :root {
+            --primary-color: #0088cc;
+            --secondary-color: #54b9ff;
+            --background-color: #f6f9fc;
+            --text-color: #333;
         }
-        button {
-            margin: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
         }
-        #status {
-            margin-top: 20px;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            text-align: center;
+            padding: 4rem 0;
+        }
+        .hero h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: white;
+            color: var(--primary-color);
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            border-radius: 30px;
             font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+        .cta-button:hover {
+            transform: translateY(-3px);
+        }
+        .features {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            padding: 4rem 0;
+        }
+        .feature {
+            flex-basis: 30%;
+            text-align: center;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease;
+        }
+        .feature:hover {
+            transform: translateY(-10px);
+        }
+        .feature i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+        @media (max-width: 768px) {
+            .feature {
+                flex-basis: 100%;
+            }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
-    <h1>積分上鏈</h1>
-    <button id="addPointsButton">增加積分</button>
-    <div id="status"></div>
+    <header>
+        <div class="container">
+            <h1>Telegram簽到系統</h1>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h2>每日簽到，輕鬆積分</h2>
+            <p>使用我們的Telegram機器人，簡單快捷地完成每日簽到</p>
+            <a href="https://t.me/YourBotName" class="cta-button">立即開始</a>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <div class="feature">
+                <i class="fas fa-calendar-check"></i>
+                <h3>每日簽到</h3>
+                <p>輕鬆完成每日簽到，累積積分不間斷</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-coins"></i>
+                <h3>積分獎勵</h3>
+                <p>每次簽到都能獲得積分，獎勵豐富多樣</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-lock"></i>
+                <h3>安全可靠</h3>
+                <p>基於區塊鏈技術，確保數據安全透明</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Telegram簽到系統. All rights reserved.</p>
+        </div>
+    </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', async function() {
-            const webApp = window.Telegram.WebApp;
-            webApp.ready();
-
-            const addPointsButton = document.getElementById('addPointsButton');
-            const statusDiv = document.getElementById('status');
-
-            // 初始化 TON
-            const ton = new TonWeb(new TonWeb.HttpProvider('https://toncenter.com/api/v2/jsonRPC'));
-            
-            // 假設的合約地址（需要替換為實際地址）
-            const contractAddress = 'EQA...';
-
-            addPointsButton.addEventListener('click', async function() {
-                try {
-                    statusDiv.textContent = '正在處理...';
-
-                    // 這裡應該實現與您的 TON 合約的實際交互邏輯
-                    // 以下僅為示例，實際操作需要根據您的合約來調整
-                    console.log('嘗試增加積分，用戶ID:', webApp.initDataUnsafe.user.id);
-
-                    // 模擬與區塊鏈交互的延遲
-                    await new Promise(resolve => setTimeout(resolve, 2000));
-
-                    statusDiv.textContent = '積分已成功添加到區塊鏈!';
-                    webApp.showAlert('積分增加成功！');
-                } catch (error) {
-                    console.error('Error:', error);
-                    statusDiv.textContent = '操作失敗: ' + error.message;
-                    webApp.showAlert('操作失敗，請稍後再試。');
-                }
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const features = document.querySelectorAll('.feature');
+            features.forEach(feature => {
+                feature.addEventListener('mouseover', () => {
+                    feature.style.backgroundColor = '#f0f7ff';
+                });
+                feature.addEventListener('mouseout', () => {
+                    feature.style.backgroundColor = 'white';
+                });
             });
         });
     </script>
