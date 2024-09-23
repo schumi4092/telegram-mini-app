@@ -1,156 +1,111 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>東吳拉霸機</title>
+    <title>動態qrcode - Telegram Bot奖励</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        :root {
-            --primary-color: #0088cc;
-            --secondary-color: #54b9ff;
-            --background-color: #f6f9fc;
-            --text-color: #333;
-        }
-        body, html {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 1rem 0;
-            text-align: center;
-        }
-        h1 {
-            margin: 0;
-            font-size: 2.5rem;
-        }
-        .hero {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            text-align: center;
-            padding: 4rem 0;
-        }
-        .hero h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-        .cta-button {
-            display: inline-block;
-            background-color: white;
-            color: var(--primary-color);
-            padding: 0.8rem 1.5rem;
-            text-decoration: none;
-            border-radius: 30px;
-            font-weight: bold;
-            transition: transform 0.3s ease;
-        }
-        .cta-button:hover {
-            transform: translateY(-3px);
-        }
-        .features {
+        body {
+            font-family: Arial, sans-serif;
             display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            padding: 4rem 0;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
         }
-        .feature {
-            flex-basis: 30%;
-            text-align: center;
-            padding: 2rem;
+        #qrcodeContainer {
             background-color: white;
+            padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-            transition: transform 0.3s ease;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: none;
         }
-        .feature:hover {
-            transform: translateY(-10px);
+        .buttons {
+            display: flex;
+            gap: 10px;
         }
-        .feature i {
-            font-size: 3rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
         }
-        footer {
-            background-color: var(--primary-color);
+        #startBtn {
+            background-color: #4CAF50;
             color: white;
-            text-align: center;
-            padding: 1rem 0;
-            position: absolute;
-            bottom: 0;
-            width: 100%;
         }
-        @media (max-width: 768px) {
-            .feature {
-                flex-basis: 100%;
-            }
+        #stopBtn {
+            background-color: #f44336;
+            color: white;
+        }
+        button:hover {
+            opacity: 0.8;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
-    <header>
-        <div class="container">
-            <h1>Telegram簽到系統</h1>
-        </div>
-    </header>
-
-    <section class="hero">
-        <div class="container">
-            <h2>每日簽到，輕鬆積分</h2>
-            <p>使用我們的Telegram機器人，簡單快捷地完成每日簽到</p>
-            <a href="https://t.me/YourBotName" class="cta-button">立即開始</a>
-        </div>
-    </section>
-
-    <section class="features">
-        <div class="container">
-            <div class="feature">
-                <i class="fas fa-calendar-check"></i>
-                <h3>每日簽到</h3>
-                <p>輕鬆完成每日簽到，累積積分不間斷</p>
-            </div>
-            <div class="feature">
-                <i class="fas fa-coins"></i>
-                <h3>積分獎勵</h3>
-                <p>每次簽到都能獲得積分，獎勵豐富多樣</p>
-            </div>
-            <div class="feature">
-                <i class="fas fa-lock"></i>
-                <h3>安全可靠</h3>
-                <p>基於區塊鏈技術，確保數據安全透明</p>
-            </div>
-        </div>
-    </section>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 東吳拉霸機. All rights reserved.</p>
-        </div>
-    </footer>
+    <div id="qrcodeContainer">
+        <div id="qrcode"></div>
+    </div>
+    <div class="buttons">
+        <button id="startBtn">开始</button>
+        <button id="stopBtn" disabled>停止</button>
+    </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            const features = document.querySelectorAll('.feature');
-            features.forEach(feature => {
-                feature.addEventListener('mouseover', () => {
-                    feature.style.backgroundColor = '#f0f7ff';
-                });
-                feature.addEventListener('mouseout', () => {
-                    feature.style.backgroundColor = 'white';
-                });
+        let qrcode;
+        let interval;
+        
+        // 在这里设置更新间隔（毫秒）
+        const updateInterval = 2000;
+
+        function initQRCode() {
+            qrcode = new QRCode(document.getElementById("qrcode"), {
+                width: 256,
+                height: 256,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
             });
-        });
+        }
+
+        function updateQRCode() {
+            const timestamp = new Date().getTime();
+            const url = `https://t.me/YourBotUsername?start=${timestamp}`;
+            qrcode.clear();
+            qrcode.makeCode(url);
+        }
+
+        function startUpdating() {
+            document.getElementById('qrcodeContainer').style.display = 'block';
+            initQRCode();
+            updateQRCode();
+            interval = setInterval(updateQRCode, updateInterval);
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = false;
+        }
+
+        function stopUpdating() {
+            clearInterval(interval);
+            document.getElementById('qrcodeContainer').style.display = 'none';
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+        }
+
+        window.onload = function() {
+            document.getElementById('startBtn').addEventListener('click', startUpdating);
+            document.getElementById('stopBtn').addEventListener('click', stopUpdating);
+        };
     </script>
 </body>
 </html>
