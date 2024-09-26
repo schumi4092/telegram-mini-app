@@ -3,172 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram簽到系統</title>
+    <title>東吳拉霸機 - 首頁</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <style>
-        :root {
-            --primary-color: #0088cc;
-            --secondary-color: #54b9ff;
-            --background-color: #f6f9fc;
-            --text-color: #333;
-        }
-        body, html {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 1rem 0;
-            text-align: center;
-        }
-        h1 {
-            margin: 0;
-            font-size: 2.5rem;
-        }
-        .hero {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            text-align: center;
-            padding: 4rem 0;
-        }
-        .hero h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-        .cta-button {
-            display: inline-block;
-            background-color: white;
-            color: var(--primary-color);
-            padding: 0.8rem 1.5rem;
-            text-decoration: none;
-            border-radius: 30px;
-            font-weight: bold;
-            transition: transform 0.3s ease;
-            cursor: pointer;
-        }
-        .cta-button:hover {
-            transform: translateY(-3px);
-        }
-        .features {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            padding: 4rem 0;
-        }
-        .feature {
-            flex-basis: 30%;
-            text-align: center;
-            padding: 2rem;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-            transition: transform 0.3s ease;
-        }
-        .feature:hover {
-            transform: translateY(-10px);
-        }
-        .feature i {
-            font-size: 3rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
-        footer {
-            background-color: var(--primary-color);
-            color: white;
-            text-align: center;
-            padding: 1rem 0;
-        }
-        /* 日曆彈窗樣式 */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 600px;
-            border-radius: 10px;
-        }
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        .calendar {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-            margin-top: 20px;
-        }
-        .calendar-day {
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #eee;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-        .calendar-day.checked {
-            background-color: var(--primary-color);
-            color: white;
-        }
-        .calendar-day.today {
-            border: 2px solid var(--secondary-color);
-        }
-        @media (max-width: 768px) {
-            .feature {
-                flex-basis: 100%;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
-        <div class="container">
-            <h1>Telegram簽到系統</h1>
-        </div>
+        <h1>東吳拉霸機</h1>
     </header>
 
-    <section class="hero">
-        <div class="container">
+    <div class="container">
+        <section class="hero">
             <h2>每日簽到，輕鬆積分</h2>
             <p>使用我們的Telegram機器人，簡單快捷地完成每日簽到</p>
-            <button id="openModal" class="cta-button">立即開始</button>
-        </div>
-    </section>
+            <a href="#" class="cta-button" id="openCalendar">立即簽到</a>
+        </section>
 
-    <section class="features">
-        <div class="container">
+        <div class="features">
             <div class="feature">
                 <i class="fas fa-calendar-check"></i>
                 <h3>每日簽到</h3>
@@ -185,86 +36,36 @@
                 <p>基於區塊鏈技術，確保數據安全透明</p>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- 簽到日曆彈窗 -->
-    <div id="checkinModal" class="modal">
+    <!-- 彈跳視窗 -->
+    <div id="calendarModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>每日簽到日曆</h2>
+            <h2>簽到日曆</h2>
             <div id="calendar" class="calendar"></div>
         </div>
     </div>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 Telegram簽到系統. All rights reserved.</p>
-        </div>
-    </footer>
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item active">
+            <i class="fas fa-home"></i>
+            首頁
+        </a>
+        <a href="slot-machine.html" class="nav-item">
+            <i class="fas fa-dice"></i>
+            拉霸機
+        </a>
+        <a href="event-exchange.html" class="nav-item">
+            <i class="fas fa-gift"></i>
+            活動兌換
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            個人資料
+        </a>
+    </nav>
 
-    <script>
-        // 獲取模態框
-        var modal = document.getElementById("checkinModal");
-        // 獲取打開模態框的按鈕
-        var btn = document.getElementById("openModal");
-        // 獲取 <span> 元素，用於關閉模態框
-        var span = document.getElementsByClassName("close")[0];
-        
-        // 點擊按鈕打開模態框
-        btn.onclick = function() {
-            modal.style.display = "block";
-            generateCalendar();
-        }
-        
-        // 點擊 <span> (x), 關閉模態框
-        span.onclick = function() {
-            modal.style.display = "none";
-        }
-        
-        // 在用戶點擊其他地方時，關閉模態框
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-
-        function generateCalendar() {
-            const calendar = document.getElementById('calendar');
-            calendar.innerHTML = ''; // 清空日曆
-            const today = new Date();
-            const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
-            
-            for (let i = 1; i <= daysInMonth; i++) {
-                const day = document.createElement('div');
-                day.className = 'calendar-day';
-                day.textContent = i;
-                
-                // 模擬一些已簽到的日期
-                if (i < today.getDate()) {
-                    day.classList.add('checked');
-                }
-                
-                // 標記今天
-                if (i === today.getDate()) {
-                    day.classList.add('today');
-                }
-                
-                calendar.appendChild(day);
-            }
-        }
-
-        // 為feature添加hover效果
-        document.addEventListener('DOMContentLoaded', (event) => {
-            const features = document.querySelectorAll('.feature');
-            features.forEach(feature => {
-                feature.addEventListener('mouseover', () => {
-                    feature.style.backgroundColor = '#f0f7ff';
-                });
-                feature.addEventListener('mouseout', () => {
-                    feature.style.backgroundColor = 'white';
-                });
-            });
-        });
-    </script>
+    <script src="scripts.js"></script>
 </body>
 </html>
