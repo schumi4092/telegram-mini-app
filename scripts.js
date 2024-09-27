@@ -1,82 +1,71 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const video = document.getElementById('qr-video');
-    const canvas = document.getElementById('qr-canvas');
-    const ctx = canvas.getContext('2d');
-    const startButton = document.getElementById('start-scanner');
+    const openCalendarBtn = document.getElementById('openCalendar');
+    const calendarModal = document.getElementById('calendarModal');
+    const calendar = document.getElementById('calendar');
     const successModal = document.getElementById('successModal');
-    const closeModal = successModal.querySelector('.close');
+    const closeBtns = document.querySelectorAll('.close');
     const rewardMessage = document.getElementById('reward-message');
-    const loadingAnimation = document.getElementById('loading-animation');
 
-    let scanning = false;
+    openCalendarBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        calendarModal.style.display = 'block';
+        generateCalendar();
+    });
 
-    startButton.onclick = startScanner;
-    closeModal.onclick = closeSuccessModal;
+    closeBtns.forEach(btn => {
+        btn.onclick = function() {
+            calendarModal.style.display = 'none';
+            successModal.style.display = 'none';
+        }
+    });
 
     window.onclick = function(event) {
+        if (event.target == calendarModal) {
+            calendarModal.style.display = 'none';
+        }
         if (event.target == successModal) {
-            closeSuccessModal();
+            successModal.style.display = 'none';
         }
     };
 
-    function startScanner() {
-        loadingAnimation.classList.remove('hidden');
-        startButton.disabled = true;
-
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-        .then(function(stream) {
-            scanning = true;
-            startButton.style.display = 'none';
-            video.srcObject = stream;
-            video.setAttribute("playsinline", true);
-            video.play();
-            requestAnimationFrame(tick);
-            loadingAnimation.classList.add('hidden');
-        })
-        .catch(function(err) {
-            console.error(err);
-            alert('無法訪問攝像頭，請確保已授予權限。');
-            loadingAnimation.classList.add('hidden');
-            startButton.disabled = false;
-        });
-    }
-
-    function tick() {
-        if (video.readyState === video.HAVE_ENOUGH_DATA) {
-            canvas.hidden = false;
-            canvas.height = video.videoHeight;
-            canvas.width = video.videoWidth;
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            var code = jsQR(imageData.data, imageData.width, imageData.height, {
-                inversionAttempts: "dontInvert",
-            });
-            if (code) {
-                console.log("Found QR code", code.data);
-                handleQRCode(code.data);
-                return;
+    function generateCalendar() {
+        calendar.innerHTML = '';
+        const today = new Date();
+        const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+        
+        for (let i = 1; i <= daysInMonth; i++) {
+            const day = document.createElement('div');
+            day.className = 'calendar-day';
+            day.textContent = i;
+            
+            if (i < today.getDate()) {
+                day.classList.add('checked');
+            } else if (i === today.getDate()) {
+                day.classList.add('today');
+                day.addEventListener('click', checkIn);
             }
-        }
-        if (scanning) {
-            requestAnimationFrame(tick);
+            
+            calendar.appendChild(day);
         }
     }
 
-    function handleQRCode(data) {
-        scanning = false;
-        video.srcObject.getTracks().forEach(track => track.stop());
-        startButton.style.display = 'block';
-        startButton.disabled = false;
+    function checkIn() {
+        if (this.classList.contains('checked')) {
+            alert('您今天已經簽到過了！');
+            return;
+        }
 
-        // 這裡可以添加驗證邏輯，檢查 QR code 是否有效
-        const rewards = ['10 積分', '20 積分', '50 積分', '100 積分', '神秘禮物'];
+        this.classList.add('checked');
+        this.removeEventListener('click', checkIn);
+
+        // 生成隨機獎勵
+        const rewards = ['10 積分', '20 積分', '50 積分', '100 積分', '幸運抽獎機會'];
         const randomReward = rewards[Math.floor(Math.random() * rewards.length)];
 
-        rewardMessage.textContent = `您已成功兌換 ${randomReward}！`;
-        successModal.style.display = "block";
+        rewardMessage.textContent = `恭喜您獲得 ${randomReward}！`;
+        calendarModal.style.display = 'none';
+        successModal.style.display = 'block';
     }
 
-    function closeSuccessModal() {
-        successModal.style.display = "none";
-    }
+    // 如果有 QR code 掃描頁面，可以在這裡添加相關代碼
 });
