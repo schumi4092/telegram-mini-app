@@ -3,19 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram簽到系統 - 活動兌換</title>
+    <title>東吳拉霸機 - 活動兌換</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.3.1/dist/jsQR.min.js"></script>
 </head>
 <body>
     <header>
-        <h1>Telegram簽到系統</h1>
+        <h1>東吳拉霸機</h1>
     </header>
 
     <div class="container">
         <h2>活動兌換</h2>
-        <p>在這裡查看當前可參與的活動，並使用您的積分兌換各種獎勵。</p>
-        <!-- 這裡可以添加活動列表和兌換功能 -->
+        <p class="instruction">掃描 QR Code 來兌換您的獎勵！</p>
+        
+        <div id="scanner-container">
+            <div id="scanner-overlay">
+                <div id="scanner-frame">
+                    <div class="corner-animation top-left"></div>
+                    <div class="corner-animation top-right"></div>
+                    <div class="corner-animation bottom-left"></div>
+                    <div class="corner-animation bottom-right"></div>
+                </div>
+            </div>
+            <video id="qr-video"></video>
+            <canvas id="qr-canvas"></canvas>
+            <div id="scan-instruction">請將 QR code 對準框內</div>
+            <button id="start-scanner" class="cta-button">開始掃描</button>
+            <div id="loading-animation" class="hidden">
+                <div class="spinner"></div>
+                <p>正在啟動相機...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 獎勵兌換成功彈窗 -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>恭喜！</h2>
+            <p id="reward-message"></p>
+        </div>
     </div>
 
     <nav class="bottom-nav">
