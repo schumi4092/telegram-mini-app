@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const successModal = document.getElementById('successModal');
     const closeModal = successModal.querySelector('.close');
     const rewardMessage = document.getElementById('reward-message');
+    const scannerContainer = document.getElementById('scanner-container');
 
     let scanning = false;
 
@@ -25,20 +26,21 @@ document.addEventListener('DOMContentLoaded', function() {
         navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
         .then(function(stream) {
             scanning = true;
-            startButton.hidden = true;
+            startButton.style.display = 'none';
             video.srcObject = stream;
             video.setAttribute("playsinline", true);
             video.play();
+            scannerContainer.style.display = 'block';
             requestAnimationFrame(tick);
         })
         .catch(function(err) {
             console.error(err);
+            alert('無法訪問攝像頭，請確保已授予權限。');
         });
     }
 
     function tick() {
         if (video.readyState === video.HAVE_ENOUGH_DATA) {
-            canvas.hidden = false;
             canvas.height = video.videoHeight;
             canvas.width = video.videoWidth;
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -60,11 +62,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleQRCode(data) {
         scanning = false;
         video.srcObject.getTracks().forEach(track => track.stop());
-        canvas.hidden = true;
-        startButton.hidden = false;
+        scannerContainer.style.display = 'none';
+        startButton.style.display = 'block';
 
-        // 這裡可以添加驗證邏輯，檢查 QR code 是否有效
-        // 現在我們假設所有的 QR codes 都是有效的
         const rewards = ['10 積分', '20 積分', '50 積分', '100 積分', '神秘禮物'];
         const randomReward = rewards[Math.floor(Math.random() * rewards.length)];
 
