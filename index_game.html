@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slot Machine</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <div class="doors">
+      <div class="door">
+        <div class="boxes"></div>
+      </div>
+      <div class="door">
+        <div class="boxes"></div>
+      </div>
+      <div class="door">
+        <div class="boxes"></div>
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button id="spinner">Spin</button>
+      
+      <!-- 在这里加入 Telegram 登录按钮 -->
+      <script async src="https://telegram.org/js/telegram-widget.js?2"
+              data-telegram-login="YOUR_BOT_USERNAME"
+              data-size="large"
+              data-auth-url="/auth/telegram"
+              data-request-access="write"></script>
+    </div>
+
+    <p class="balance">當前餘額：0u</p>
+
+    <!-- 新增折價券顯示區域 -->
+    <div class="coupon-summary">
+      <p>你擁有的折價券：</p>
+      <p>5u 折價券：<span id="coupon-5">0</span> 張</p>
+      <p>10u 折價券：<span id="coupon-10">0</span> 張</p>
+      <p>15u 折價券：<span id="coupon-15">0</span> 張</p>
+      <p>20u 折價券：<span id="coupon-20">0</span> 張</p>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="connect.js"></script>
+
+  </div>
+</body>
+</html>
