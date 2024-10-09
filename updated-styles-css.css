@@ -1,0 +1,35 @@
+/* 在原有的 CSS 文件末尾添加以下樣式 */
+
+#walletModal {
+    display: block;
+}
+
+#walletModal .modal-content {
+    text-align: center;
+}
+
+#connectWallet {
+    margin-top: 1rem;
+}
+
+.wallet-address, .connection-status {
+    margin-top: 1rem;
+    font-size: 0.9em;
+    word-break: break-all;
+}
+
+/* 調整原有的 .modal 樣式 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    animation: fadeIn 0.3s;
+}
+
+/* 其餘的 CSS 保持不變 */
