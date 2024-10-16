@@ -1,56 +1,432 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>東吳拉霸機 - 活動兌換</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.3.1/dist/jsQR.min.js"></script>
-</head>
-<body>
-    <header>
-        <h1>東吳拉霸機</h1>
-    </header>
+:root {
+    --primary-color: #0088cc;
+    --secondary-color: #54b9ff;
+    --background-color: #f6f9fc;
+    --text-color: #333;
+    --box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
 
-    <div class="container">
-        <h2>活動兌換</h2>
-        <p>請輸入兌換碼來兌換您的獎勵！</p>
-      
-        <div id="exchange-container">
-          <p id="exchange-instruction">請輸入兌換碼</p>
-          <div id="exchange-input-area">
-            <input type="text" id="exchange-input" placeholder="請輸入兌換碼" />
-          </div>
-            <button id="confirm-exchange" class="cta-button">確認兌換</button>
-        </div>
-        <div id="successModal" class="modal">
-            <div class="modal-content">
-              <span class="close">&times;</span>
-              <h2>兌換成功！</h2>
-              <p id="reward-message"></p>
-            </div>
-          </div>
-      </div>
-    <nav class="bottom-nav">
-        <a href="index.html" class="nav-item">
-            <i class="fas fa-home"></i>
-            首頁
-        </a>
-        <a href="slot-machine.html" class="nav-item">
-            <i class="fas fa-dice"></i>
-            拉霸機
-        </a>
-        <a href="event-exchange.html" class="nav-item active">
-            <i class="fas fa-gift"></i>
-            活動兌換
-        </a>
-        <a href="profile.html" class="nav-item">
-            <i class="fas fa-user"></i>
-            個人資料
-        </a>
-    </nav>
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    height: 100%;
+}
 
-    <script src="scripts.js"></script>
-</body>
-</html>
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    padding-bottom: 70px;
+}
+
+header {
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+}
+
+h1, h2 {
+    margin: 0;
+}
+
+.hero {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    text-align: center;
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+}
+
+.cta-button {
+    display: inline-block;
+    background-color: white;
+    color: var(--primary-color);
+    padding: 0.8rem 1.5rem;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: bold;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.cta-button:hover {
+    transform: translateY(-3px);
+    background-color: #f0f0f0;
+}
+
+.cta-button:focus {
+    outline: 2px solid var(--secondary-color);
+    outline-offset: 2px;
+}
+
+.features {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+}
+
+.feature {
+    flex-basis: 30%;
+    text-align: center;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: var(--box-shadow);
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.feature:hover {
+    transform: translateY(-5px);
+}
+
+.feature i {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--primary-color);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    z-index: 1000;
+}
+
+.nav-item {
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 12px;
+    transition: color 0.3s ease;
+}
+
+.nav-item i {
+    font-size: 24px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.nav-item.active {
+    color: #ffd700;
+}
+
+.nav-item:focus {
+    outline: 2px solid var(--secondary-color);
+    outline-offset: 2px;
+}
+
+/* 模態框樣式 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    animation: slideIn 0.3s;
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+}
+
+/* 日曆樣式 */
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-top: 15px;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.calendar-day.checked {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.calendar-day.today {
+    border: 2px solid var(--secondary-color);
+}
+
+.calendar-day:not(.checked):hover {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+/* QR code 掃描頁面樣式 */
+#scanner-container {
+    position: relative;
+    max-width: 100%;
+    height: 70vh;
+    margin: 20px auto;
+    overflow: hidden;
+    background: #f0f0f0;
+    border-radius: 10px;
+    box-shadow: var(--box-shadow);
+}
+
+#scanner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.3);
+    z-index: 1;
+}
+
+#scanner-frame {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70%;
+    height: 50%;
+    border: 2px solid #00a0e9;
+    box-shadow: 0 0 0 9999px rgba(255, 255, 255, 0.5);
+}
+
+.corner-animation {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-color: #00a0e9;
+    border-style: solid;
+    animation: pulse 2s infinite;
+}
+
+.top-left {
+    top: -2px;
+    left: -2px;
+    border-width: 2px 0 0 2px;
+}
+
+.top-right {
+    top: -2px;
+    right: -2px;
+    border-width: 2px 2px 0 0;
+}
+
+.bottom-left {
+    bottom: -2px;
+    left: -2px;
+    border-width: 0 0 2px 2px;
+}
+
+.bottom-right {
+    bottom: -2px;
+    right: -2px;
+    border-width: 0 2px 2px 0;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
+}
+
+#qr-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#scan-instruction {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #333;
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.5);
+    z-index: 2;
+}
+
+#start-scanner {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+}
+
+#loading-animation {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 3;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #00a0e9;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.hidden {
+    display: none;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .feature {
+        flex-basis: 100%;
+    }
+    
+    #scanner-frame {
+        width: 90%;
+        height: 60%;
+    }
+    
+    .container {
+        padding: 10px;
+        padding-bottom: 60px;
+    }
+    
+    .hero {
+        padding: 1.5rem 0;
+    }
+    
+    .cta-button {
+        padding: 0.6rem 1.2rem;
+    }
+
+    #scan-instruction {
+        font-size: 16px;
+    }
+}
+
+
+
+
+/* ... 保留其他原有的 CSS ... */
+
+#exchange-container {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 20px;
+    text-align: center;
+    box-shadow: var(--box-shadow);
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#exchange-input-area {
+    margin: 15px 0;
+}
+
+#exchange-input {
+    width: 100%;
+    max-width: 200px;
+    padding: 8px;
+    border: 1px solid var(--primary-color);
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+#confirm-exchange {
+    margin-top: 8px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 4px;
+}
+
+#confirm-exchange:hover {
+    background-color: var(--secondary-color);
+}
+
+/* 響應式設計調整 */
+@media (max-width: 768px) {
+    #exchange-container {
+        max-width: 90%;
+    }
+
+    #exchange-input {
+        max-width: 100%;
+    }
+    
+    #confirm-exchange {
+        width: 100%;
+        max-width: 200px;
+    }
+}
