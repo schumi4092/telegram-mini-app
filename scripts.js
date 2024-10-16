@@ -69,3 +69,49 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 如果有 QR code 掃描頁面，可以在這裡添加相關代碼
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const exchangeInput = document.getElementById('exchange-input');
+    const confirmExchangeBtn = document.getElementById('confirm-exchange');
+    const successModal = document.getElementById('successModal');
+    const closeBtn = successModal.querySelector('.close');
+    const rewardMessage = document.getElementById('reward-message');
+
+    confirmExchangeBtn.addEventListener('click', function() {
+        const exchangeCode = exchangeInput.value.trim();
+        if (exchangeCode) {
+            exchangeReward(exchangeCode);
+        } else {
+            alert('請輸入有效的兌換碼！');
+        }
+    });
+
+    closeBtn.onclick = function() {
+        successModal.style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        if (event.target == successModal) {
+            successModal.style.display = 'none';
+        }
+    }
+
+    function exchangeReward(code) {
+        // 這裡應該是實際的 API 調用來驗證兌換碼
+        // 現在我們用一個模擬的隨機結果
+        const isValid = Math.random() < 0.8; // 80% 的概率有效
+        
+        if (isValid) {
+            const rewards = ['10 積分', '20 積分', '50 積分', '100 積分', '幸運抽獎機會'];
+            const randomReward = rewards[Math.floor(Math.random() * rewards.length)];
+            rewardMessage.textContent = `恭喜您獲得 ${randomReward}！`;
+            successModal.style.display = 'block';
+        } else {
+            alert('無效的兌換碼，請重試。');
+        }
+        
+        exchangeInput.value = ''; // 清空輸入欄位
+    }
+
+    // 保留其他可能需要的功能...
+});
